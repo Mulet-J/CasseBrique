@@ -1,11 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct Player {
+    int playerID;
+    int health;
+    int bombStrength;
+    int bombCount;
+    int invincibility;
+} Player;
+
+typedef struct Bomb{
+    int timer;
+    int strength;
+} Bomb;
+
+typedef struct  Case {
+    int wall;
+    int powerUP;
+    Player player;
+    Bomb bomb;
+} Case;
+
 typedef struct Map {
     int width;
     int height;
     int **grid;
 } Map;
+
 /*
  * 0 = vide
  * 1-4 = joueurs
