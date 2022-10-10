@@ -27,21 +27,6 @@ typedef struct Map {
     Tile **tileGrid;
 } Map;
 
-void movePlayer(Map *myMap,int playerID, char direction){
-    switch (direction) {
-        case 'z':
-            break;
-        case 'q':
-            break;
-        case 's':
-            break;
-        case 'd':
-            break;
-        default:
-            break;
-    }
-}
-
 void bombExplode(Map *myMap,int x, int y){
 
 }
@@ -137,8 +122,50 @@ void printMap(Map *myMap){
     }
 }
 
+void movePlayer(Map *myMap,int playerID, char direction){
+    int xPlayer;
+    int yPlayer;
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].player.playerID == playerID){
+                xPlayer = x;
+                yPlayer = y;
+            }
+        }
+    }
+    switch (direction) {
+        case 'z':
+            if(myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && xPlayer != 0){
+                myMap->tileGrid[xPlayer-1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 'q':
+            if(myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && yPlayer != 0){
+                myMap->tileGrid[xPlayer][yPlayer-1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 's':
+            if(myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && xPlayer != myMap->height-1){
+                myMap->tileGrid[xPlayer+1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 'd':
+            if(myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && xPlayer != myMap->width-1){
+                myMap->tileGrid[xPlayer][yPlayer+1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 int main() {
     Map myMap = newMap(11,11);
+    movePlayer(&myMap, 3, 's');
     printMap(&myMap);
     /*
      * boucle de jeu :
