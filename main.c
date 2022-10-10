@@ -57,10 +57,31 @@ Player newPlayer(int playerID){
     return myPlayer;
 }
 
+Player nullPlayer(){
+    Player myPlayer = {
+            .bombCount = 0,
+            .bombStrength = 0,
+            .health = 0,
+            .invincibility = 0,
+            .playerID = 0,
+    };
+    return myPlayer;
+}
+
 Bomb newBomb(int strength){
     Bomb myBomb = {
+            .timer = 4,
             .strength = strength,
-    }
+    };
+    return myBomb;
+}
+
+Bomb nullBomb(){
+    Bomb myBomb = {
+            .timer = 0,
+            .strength = 0,
+    };
+    return myBomb;
 }
 
 Map newMap(int height, int width) {
@@ -76,7 +97,9 @@ Map newMap(int height, int width) {
         for (int y = 0; y < myMap.width; ++y) {
             myMap.tileGrid[x][y].wall = 0;
             myMap.tileGrid[x][y].powerUP = 0;
-            myMap.tileGrid[x][y].player. = ;
+            myMap.tileGrid[x][y].player = nullPlayer();
+            myMap.tileGrid[x][y].bomb = nullBomb();
+            //myMap.tileGrid[x][y].player. = ;
             if (x == 0 || y == 0 || x == height - 1 || y == width - 1) {
                 myMap.tileGrid[x][y].wall = 1;
             } else if ((x==1 || x == height-2) && (y==1 || y==width-2)) {
@@ -102,8 +125,10 @@ void printMap(Map *myMap){
                 printf("X ");
             } else if(myMap->tileGrid[x][y].wall==2) {
                 printf("# ");
-            } else if(myMap->tileGrid[x][y].player) {
-
+            } else if(myMap->tileGrid[x][y].player.playerID !=0 ) {
+                printf("p ");
+            } else if(myMap->tileGrid[x][y].bomb.strength !=0 ) {
+                printf("b ");
             } else {
                 printf("  ");
             }
@@ -113,7 +138,7 @@ void printMap(Map *myMap){
 }
 
 int main() {
-    Map myMap = newMap(11,6);
+    Map myMap = newMap(11,11);
     printMap(&myMap);
     /*
      * boucle de jeu :
