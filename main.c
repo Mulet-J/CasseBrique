@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct Player {
     int playerID;
@@ -10,6 +11,7 @@ typedef struct Player {
 } Player;
 
 typedef struct Bomb{
+    int playerID;
     int timer;
     int strength;
 } Bomb;
@@ -24,17 +26,37 @@ typedef struct  Tile {
 typedef struct Map {
     int width;
     int height;
+    Player *players;
     Tile **tileGrid;
 } Map;
 
-void bombExplode(Map *myMap,int x, int y){
+Bomb newBomb(Player *myPlayer){
+    Bomb myBomb = {
+            .timer = 14,
+            .strength = myPlayer->bombStrength,
+            .playerID = myPlayer->playerID,
+    };
+    myPlayer->bombCount -= 1;
+    return myBomb;
+}
 
+Bomb nullBomb(){
+    Bomb myBomb = {
+            .timer = 0,
+            .strength = 0,
+            .playerID = 0,
+    };
+    return myBomb;
+}
+
+Bomb *getBomb(Map myMap, int x, int y){
+    return &myMap.tileGrid[x][y].bomb;
 }
 
 Player newPlayer(int playerID){
     Player myPlayer = {
-            .bombCount = 1,
-            .bombStrength = 2,
+            .bombCount = 4,
+            .bombStrength = 3,
             .health = 1,
             .invincibility = 0,
             .playerID = playerID,
@@ -53,24 +75,67 @@ Player nullPlayer(){
     return myPlayer;
 }
 
-Bomb newBomb(int strength){
-    Bomb myBomb = {
-            .timer = 4,
-            .strength = strength,
-    };
-    return myBomb;
+void actionPlayer(Map *myMap,Player *myPlayer){
+    int xPlayer;
+    int yPlayer;
+    char direction;
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].player.playerID == myPlayer->playerID){
+                xPlayer = x;
+                yPlayer = y;
+            }
+        }
+    }
+    scanf("%c",&direction);
+    switch (direction) {
+        case 'z':
+            if(xPlayer != 0 && myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer-1][yPlayer].player.playerID == 0 && myMap->tileGrid[xPlayer-1][yPlayer].bomb.playerID == 0){
+                myMap->tileGrid[xPlayer-1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 'q':
+            if(yPlayer != 0 && myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer-1].player.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer-1].bomb.playerID == 0){
+                myMap->tileGrid[xPlayer][yPlayer-1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 's':
+            if(xPlayer != myMap->height-1 && myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer+1][yPlayer].player.playerID == 0 && myMap->tileGrid[xPlayer+1][yPlayer].bomb.playerID == 0){
+                myMap->tileGrid[xPlayer+1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case 'd':
+            if(yPlayer != myMap->width-1 && myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer+1].player.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer+1].bomb.playerID == 0){
+                myMap->tileGrid[xPlayer][yPlayer+1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            }
+            break;
+        case ' ':
+            if(myMap->tileGrid[xPlayer][yPlayer].bomb.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer].player.bombCount > 0){
+                myMap->tileGrid[xPlayer][yPlayer].bomb = newBomb(myPlayer);
+            }
+            break;
+        default:
+            break;
+    }
 }
 
-Bomb nullBomb(){
-    Bomb myBomb = {
-            .timer = 0,
-            .strength = 0,
-    };
-    return myBomb;
+Player *getPlayerByID(Map *myMap, int playerID){
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].player.playerID == playerID){
+                return &myMap->tileGrid[x][y].player;
+            }
+        }
+    }
+    return NULL;
 }
 
 Map newMap(int height, int width) {
-    //reste initialiser toutes les valeurs même vides
+    //toujours initialiser toutes les valeurs même vides
     int playerID = 1;
     Map myMap = {
             .height = height,
@@ -93,7 +158,7 @@ Map newMap(int height, int width) {
                 playerID++;
                 //player
             } else if (x%2 == 0 && y%2 == 0) {
-                //mur milieu carte
+                myMap.tileGrid[x][y].wall = 2;
             } else {
                 //vide
             }
@@ -103,7 +168,7 @@ Map newMap(int height, int width) {
 }
 
 void printMap(Map *myMap){
-    system("cls");  //vide la console sous windows
+    //system("cls");  //vide la console sous windows
     for (int x = 0; x < myMap->height; ++x) {
         for (int y = 0; y <myMap->width; ++y) {
             if(myMap->tileGrid[x][y].wall==1){
@@ -112,7 +177,7 @@ void printMap(Map *myMap){
                 printf("# ");
             } else if(myMap->tileGrid[x][y].player.playerID !=0 ) {
                 printf("p ");
-            } else if(myMap->tileGrid[x][y].bomb.strength !=0 ) {
+            } else if(myMap->tileGrid[x][y].bomb.playerID !=0 ) {
                 printf("b ");
             } else {
                 printf("  ");
@@ -122,51 +187,83 @@ void printMap(Map *myMap){
     }
 }
 
-void movePlayer(Map *myMap,int playerID, char direction){
-    int xPlayer;
-    int yPlayer;
-    for (int x = 0; x < myMap->height; ++x) {
-        for (int y = 0; y < myMap->width; ++y) {
-            if(myMap->tileGrid[x][y].player.playerID == playerID){
-                xPlayer = x;
-                yPlayer = y;
+void bombExplode(Map *myMap, int x, int y){
+    //ignorer erreur c'est géré
+    Bomb *myBomb = getBomb(*myMap,x,y);
+    Player *myPlayer = getPlayerByID(myMap,myBomb->playerID);
+    myPlayer->bombCount++;
+    myBomb->playerID = 0;
+
+    for (int i = 0; i < myBomb->strength; ++i) {
+        if(x-i>=0){
+            if(myMap->tileGrid[x-i][y].player.playerID != 0){ //joueur présent
+
+            }
+            if(myMap->tileGrid[x-i][y].wall == 2){ //mur destructible
+                myMap->tileGrid[x-i][y].wall = 0;
+            }
+            if(myMap->tileGrid[x-i][y].bomb.playerID != 0){ //bombe présente
+                bombExplode(myMap,x-i,y);
+            }
+        }
+        if(y-i>=0){
+            if(myMap->tileGrid[x][y-i].player.playerID != 0){ //joueur présent
+
+            }
+            if(myMap->tileGrid[x][y-i].wall == 2){ //mur destructible
+                myMap->tileGrid[x][y-i].wall = 0;
+            }
+            if(myMap->tileGrid[x][y-i].bomb.playerID != 0){ //bombe présente
+                bombExplode(myMap,x,y-i);
+            }
+        }
+        if(x+i<=myMap->height){
+            if(myMap->tileGrid[x+i][y].player.playerID != 0){ //joueur présent
+
+            }
+            if(myMap->tileGrid[x+i][y].wall == 2){ //mur destructible
+                myMap->tileGrid[x+i][y].wall = 0;
+            }
+            if(myMap->tileGrid[x+i][y].bomb.playerID != 0){ //bombe présente
+                bombExplode(myMap,x+i,y);
+            }
+        }
+        if(y+i<=myMap->width){
+            if(myMap->tileGrid[x][y+i].player.playerID != 0){ //joueur présent
+
+            }
+            if(myMap->tileGrid[x][y+i].wall == 2){ //mur destructible
+                myMap->tileGrid[x][y+i].wall = 0;
+            }
+            if(myMap->tileGrid[x][y+i].bomb.playerID != 0){ //bombe présente
+                bombExplode(myMap,x,y+i);
             }
         }
     }
-    switch (direction) {
-        case 'z':
-            if(myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && xPlayer != 0){
-                myMap->tileGrid[xPlayer-1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+}
+
+void checkBomb(Map *myMap){
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].bomb.playerID != 0 && myMap->tileGrid[x][y].bomb.timer == 0){
+                bombExplode(myMap,x,y);
             }
-            break;
-        case 'q':
-            if(myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && yPlayer != 0){
-                myMap->tileGrid[xPlayer][yPlayer-1].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+            else if(myMap->tileGrid[x][y].bomb.timer >0){
+                myMap->tileGrid[x][y].bomb.timer--;
             }
-            break;
-        case 's':
-            if(myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && xPlayer != myMap->height-1){
-                myMap->tileGrid[xPlayer+1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
-            }
-            break;
-        case 'd':
-            if(myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && xPlayer != myMap->width-1){
-                myMap->tileGrid[xPlayer][yPlayer+1].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
-            }
-            break;
-        default:
-            break;
+        }
     }
 }
 
 int main() {
     Map myMap = newMap(11,11);
-    movePlayer(&myMap, 3, 's');
     printMap(&myMap);
+    for (int i = 0; i < 200; ++i) {
+        //la boucle ignore 1/2 scanf et jsp pk
+        actionPlayer(&myMap, getPlayerByID(&myMap,2));
+        checkBomb(&myMap);
+        printMap(&myMap);
+    }
     /*
      * boucle de jeu :
      * afficher carte
