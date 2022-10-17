@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdbool.h>
 
 typedef struct Player {
     int playerID;
@@ -74,6 +76,8 @@ Player nullPlayer(){
     };
     return myPlayer;
 }
+
+
 
 void actionPlayer(Map *myMap,Player *myPlayer){
     int xPlayer;
@@ -255,8 +259,44 @@ void checkBomb(Map *myMap){
     }
 }
 
+int menu(){
+    int choice;
+    printf("Bienvenue dans Casse-briques !\n\n");
+    printf("Menu principal:\n1. Nouvelle partie\n2. Voir les maps\n3. Quitter le jeu\n\n");
+    scanf("%d", &choice);
+    while(choice < 1 || choice > 3) {
+        printf("Entrez un nombre entre 1 et 3\n");
+        scanf("%d", &choice);
+    }
+    return choice;
+}
+
 int main() {
-    Map myMap = newMap(11,11);
+    int mainMenu = menu();
+    if(mainMenu == 1) {
+        // Charger la map
+        Map myMap = newMap(11,11);
+        printMap(&myMap);
+        for (int i = 0; i < 200; ++i) {
+            //la boucle ignore 1/2 scanf et jsp pk
+            //Erwan : j'ai mis en commentaire ton printMap en dessous : ça affiche deux fois la map sinon
+            actionPlayer(&myMap, getPlayerByID(&myMap,2));
+            checkBomb(&myMap);
+            //printMap(&myMap);
+        }
+    }
+    if(mainMenu == 2) {
+        int choice;
+        printf("Affiche la liste des maps\n");
+        printf("Choisir une map de la liste : ");
+        scanf("%d", &choice);
+        printf("%d", choice);
+    }
+    if(mainMenu == 3) {
+        printf("A bientot !");
+        return 0;
+    }
+    /*Map myMap = newMap(11,11);
     printMap(&myMap);
     for (int i = 0; i < 200; ++i) {
         //la boucle ignore 1/2 scanf et jsp pk
@@ -264,6 +304,7 @@ int main() {
         checkBomb(&myMap);
         printMap(&myMap);
     }
+    */
     /*
      * boucle de jeu :
      * afficher carte
@@ -273,5 +314,5 @@ int main() {
      * check joueur en vie
      */
 
-    return 0;
+    // return 0;
 }
