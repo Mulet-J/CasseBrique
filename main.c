@@ -21,7 +21,7 @@ typedef struct Bomb{
 typedef struct  Tile {
     int wall;
     int powerUP;
-    Player player;
+    Player *player;
     Bomb bomb;
 } Tile;
 
@@ -85,7 +85,7 @@ void actionPlayer(Map *myMap,Player *myPlayer){
     char direction;
     for (int x = 0; x < myMap->height; ++x) {
         for (int y = 0; y < myMap->width; ++y) {
-            if(myMap->tileGrid[x][y].player.playerID == myPlayer->playerID){
+            if(myMap->tileGrid[x][y].player == myPlayer){
                 xPlayer = x;
                 yPlayer = y;
             }
@@ -94,31 +94,31 @@ void actionPlayer(Map *myMap,Player *myPlayer){
     scanf("%c",&direction);
     switch (direction) {
         case 'z':
-            if(xPlayer != 0 && myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer-1][yPlayer].player.playerID == 0 && myMap->tileGrid[xPlayer-1][yPlayer].bomb.playerID == 0){
+            if(xPlayer != 0 && myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer-1][yPlayer].player == NULL && myMap->tileGrid[xPlayer-1][yPlayer].bomb.playerID == 0){
                 myMap->tileGrid[xPlayer-1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 'q':
-            if(yPlayer != 0 && myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer-1].player.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer-1].bomb.playerID == 0){
+            if(yPlayer != 0 && myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer-1].player == NULL && myMap->tileGrid[xPlayer][yPlayer-1].bomb.playerID == 0){
                 myMap->tileGrid[xPlayer][yPlayer-1].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 's':
-            if(xPlayer != myMap->height-1 && myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer+1][yPlayer].player.playerID == 0 && myMap->tileGrid[xPlayer+1][yPlayer].bomb.playerID == 0){
+            if(xPlayer != myMap->height-1 && myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer+1][yPlayer].player == NULL && myMap->tileGrid[xPlayer+1][yPlayer].bomb.playerID == 0){
                 myMap->tileGrid[xPlayer+1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 'd':
-            if(yPlayer != myMap->width-1 && myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer+1].player.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer+1].bomb.playerID == 0){
+            if(yPlayer != myMap->width-1 && myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer+1].player == NULL && myMap->tileGrid[xPlayer][yPlayer+1].bomb.playerID == 0){
                 myMap->tileGrid[xPlayer][yPlayer+1].player = myMap->tileGrid[xPlayer][yPlayer].player;
-                myMap->tileGrid[xPlayer][yPlayer].player = nullPlayer();
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case ' ':
-            if(myMap->tileGrid[xPlayer][yPlayer].bomb.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer].player.bombCount > 0){
+            if(myMap->tileGrid[xPlayer][yPlayer].bomb.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer].player->bombCount > 0){
                 myMap->tileGrid[xPlayer][yPlayer].bomb = newBomb(myPlayer);
             }
             break;
@@ -128,14 +128,7 @@ void actionPlayer(Map *myMap,Player *myPlayer){
 }
 
 Player *getPlayerByID(Map *myMap, int playerID){
-    for (int x = 0; x < myMap->height; ++x) {
-        for (int y = 0; y < myMap->width; ++y) {
-            if(myMap->tileGrid[x][y].player.playerID == playerID){
-                return &myMap->tileGrid[x][y].player;
-            }
-        }
-    }
-    return NULL;
+    return &myMap->players[playerID];
 }
 
 Map newMap(int height, int width) {
@@ -144,21 +137,24 @@ Map newMap(int height, int width) {
     Map myMap = {
             .height = height,
             .width = width,
+            .players = malloc(sizeof(Player)*4),
             .tileGrid = malloc(sizeof(Tile)*height),
     };
+    for (int i = 0; i < 4; ++i) {
+        myMap.players[i] = newPlayer(i);
+    }
     for (int x = 0; x < myMap.height; ++x) {
         myMap.tileGrid[x] = malloc(sizeof(Tile)*height);
         for (int y = 0; y < myMap.width; ++y) {
             myMap.tileGrid[x][y].wall = 0;
             myMap.tileGrid[x][y].powerUP = 0;
-            myMap.tileGrid[x][y].player = nullPlayer();
+            myMap.tileGrid[x][y].player = NULL;
             myMap.tileGrid[x][y].bomb = nullBomb();
             //myMap.tileGrid[x][y].player. = ;
             if (x == 0 || y == 0 || x == height - 1 || y == width - 1) {
                 myMap.tileGrid[x][y].wall = 1;
             } else if ((x==1 || x == height-2) && (y==1 || y==width-2)) {
-                Player myPlayer = newPlayer(playerID);
-                myMap.tileGrid[x][y].player = myPlayer;
+                myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
                 playerID++;
                 //player
             } else if (x%2 == 0 && y%2 == 0) {
@@ -179,7 +175,7 @@ void printMap(Map *myMap){
                 printf("X ");
             } else if(myMap->tileGrid[x][y].wall==2) {
                 printf("# ");
-            } else if(myMap->tileGrid[x][y].player.playerID !=0 ) {
+            } else if(myMap->tileGrid[x][y].player != NULL) {
                 printf("p ");
             } else if(myMap->tileGrid[x][y].bomb.playerID !=0 ) {
                 printf("b ");
@@ -200,7 +196,7 @@ void bombExplode(Map *myMap, int x, int y){
 
     for (int i = 0; i < myBomb->strength; ++i) {
         if(x-i>=0){
-            if(myMap->tileGrid[x-i][y].player.playerID != 0){ //joueur présent
+            if(myMap->tileGrid[x-i][y].player->playerID != 0){ //joueur présent
 
             }
             if(myMap->tileGrid[x-i][y].wall == 2){ //mur destructible
@@ -211,7 +207,7 @@ void bombExplode(Map *myMap, int x, int y){
             }
         }
         if(y-i>=0){
-            if(myMap->tileGrid[x][y-i].player.playerID != 0){ //joueur présent
+            if(myMap->tileGrid[x][y-i].player->playerID != 0){ //joueur présent
 
             }
             if(myMap->tileGrid[x][y-i].wall == 2){ //mur destructible
@@ -222,7 +218,7 @@ void bombExplode(Map *myMap, int x, int y){
             }
         }
         if(x+i<=myMap->height){
-            if(myMap->tileGrid[x+i][y].player.playerID != 0){ //joueur présent
+            if(myMap->tileGrid[x+i][y].player->playerID != 0){ //joueur présent
 
             }
             if(myMap->tileGrid[x+i][y].wall == 2){ //mur destructible
@@ -233,7 +229,7 @@ void bombExplode(Map *myMap, int x, int y){
             }
         }
         if(y+i<=myMap->width){
-            if(myMap->tileGrid[x][y+i].player.playerID != 0){ //joueur présent
+            if(myMap->tileGrid[x][y+i].player->playerID != 0){ //joueur présent
 
             }
             if(myMap->tileGrid[x][y+i].wall == 2){ //mur destructible
@@ -282,7 +278,7 @@ int main() {
             //Erwan : j'ai mis en commentaire ton printMap en dessous : ça affiche deux fois la map sinon
             actionPlayer(&myMap, getPlayerByID(&myMap,2));
             checkBomb(&myMap);
-            //printMap(&myMap);
+            printMap(&myMap);
         }
     }
     if(mainMenu == 2) {
