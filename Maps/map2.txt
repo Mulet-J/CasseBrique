@@ -1,0 +1,16 @@
+2
+2 2
+15 13
+xxxxxxxxxxxxxxx
+x  mmmmmmmmm  x
+x xmxmxmxmxmx x
+xmmmmmmmmmmmmmx
+xmxmxmxmxmxmxmx
+xmmmmmmmmmmmmmx
+xmxmxmxmxmxmxmx
+xmmmmmmmmmmmmmx
+xmxmxmxmxmxmxmx
+xmmmmmmmmmmmmmx
+x xmxmxmxmxmx x
+x  mmmmmmmmm  x
+xxxxxxxxxxxxxxx

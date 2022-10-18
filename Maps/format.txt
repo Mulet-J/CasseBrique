@@ -1,0 +1,44 @@
+nbJoueur
+nbBombes puissanceBombe
+largeur hauteur
+x = mur indestructible
+m = mur destructible
+1 2 3 4 = joueurs
+
+Map newMap(int height, int width) {
+    //toujours initialiser toutes les valeurs même vides
+    int playerID = 1;
+    Map myMap = {
+            .height = height,
+            .width = width,
+            .players = malloc(sizeof(Player)*4),
+            .tileGrid = malloc(sizeof(Tile)*height),
+    };
+    for (int i = 0; i < 4; ++i) {
+        Player myPlayer = newPlayer(i+1);
+        myMap.players[i] = myPlayer;
+        ;
+    }
+    for (int x = 0; x < myMap.height; ++x) {
+        myMap.tileGrid[x] = malloc(sizeof(Tile)*height);
+        for (int y = 0; y < myMap.width; ++y) {
+            myMap.tileGrid[x][y].wall = 0;
+            myMap.tileGrid[x][y].powerUP = 0;
+            myMap.tileGrid[x][y].player = NULL;
+            myMap.tileGrid[x][y].bomb = nullBomb();
+            //myMap.tileGrid[x][y].player. = ;
+            if (x == 0 || y == 0 || x == height - 1 || y == width - 1) {
+                myMap.tileGrid[x][y].wall = 1;
+            } else if ((x==1 || x == height-2) && (y==1 || y==width-2)) {
+                myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
+                playerID++;
+                //player
+            } else if (x%2 == 0 && y%2 == 0) {
+                myMap.tileGrid[x][y].wall = 2;
+            } else {
+                //vide
+            }
+        }
+    }
+    return myMap;
+}

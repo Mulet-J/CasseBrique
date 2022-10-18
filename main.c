@@ -10,6 +10,7 @@ typedef struct Player {
     int bombStrength;
     int bombCount;
     int invincibility;
+    int isAlive;
 } Player;
 
 typedef struct Bomb{
@@ -34,7 +35,7 @@ typedef struct Map {
 
 Bomb newBomb(Player *myPlayer){
     Bomb myBomb = {
-            .timer = 14,
+            .timer = 5,
             .strength = myPlayer->bombStrength,
             .playerID = myPlayer->playerID,
     };
@@ -55,29 +56,17 @@ Bomb *getBomb(Map myMap, int x, int y){
     return &myMap.tileGrid[x][y].bomb;
 }
 
-Player newPlayer(int playerID){
+Player newPlayer(int playerID, int bombCount, int bombStrength){
     Player myPlayer = {
-            .bombCount = 4,
-            .bombStrength = 3,
+            .playerID = playerID,
+            .bombCount = bombCount,
+            .bombStrength = bombStrength,
             .health = 1,
             .invincibility = 0,
-            .playerID = playerID,
+            .isAlive = 1,
     };
     return myPlayer;
 }
-
-Player nullPlayer(){
-    Player myPlayer = {
-            .bombCount = 0,
-            .bombStrength = 0,
-            .health = 0,
-            .invincibility = 0,
-            .playerID = 0,
-    };
-    return myPlayer;
-}
-
-
 
 void actionPlayer(Map *myMap,Player *myPlayer){
     int xPlayer;
@@ -94,7 +83,7 @@ void actionPlayer(Map *myMap,Player *myPlayer){
     //solution 1
     scanf("%c",&direction);
     scanf("%c",&direction);
-    //solution 2 (espace fonctionne pas)
+    //solution 2 (espace pas utilisable)
     //scanf(" %c",&direction);
 
     switch (direction) {
@@ -136,6 +125,10 @@ Player *getPlayerByID(Map *myMap, int playerID){
     return &myMap->players[playerID];
 }
 
+Player *getPlayerByPos(Map *myMap, int x, int y){
+    return myMap->tileGrid[x][y].player;
+}
+
 Map newMap(int height, int width) {
     //toujours initialiser toutes les valeurs même vides
     int playerID = 1;
@@ -146,7 +139,9 @@ Map newMap(int height, int width) {
             .tileGrid = malloc(sizeof(Tile)*height),
     };
     for (int i = 0; i < 4; ++i) {
-        myMap.players[i] = newPlayer(i);
+        Player myPlayer = newPlayer(i+1,2,2);
+        myMap.players[i] = myPlayer;
+        ;
     }
     for (int x = 0; x < myMap.height; ++x) {
         myMap.tileGrid[x] = malloc(sizeof(Tile)*height);
@@ -175,8 +170,8 @@ Map newMap(int height, int width) {
 void printMap(Map *myMap){
     //system("cls");  //vide la console sous windows
     for (int x = 0; x < myMap->height; ++x) {
-        for (int y = 0; y <myMap->width; ++y) {
-            if(myMap->tileGrid[x][y].wall==1){
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].wall==1) {
                 printf("X ");
             } else if(myMap->tileGrid[x][y].wall==2) {
                 printf("# ");
@@ -192,8 +187,14 @@ void printMap(Map *myMap){
     }
 }
 
+void playerDie(Map *myMap, int x, int y){
+    Player *myPlayer = getPlayerByPos(myMap,x,y);
+    myPlayer->isAlive = 0;
+    myMap->tileGrid[x][y].player = NULL;
+}
+
 void bombExplode(Map *myMap, int x, int y){
-    //ignorer erreur c'est géré
+    //ignorer warning c'est géré
     Bomb *myBomb = getBomb(*myMap,x,y);
     Player *myPlayer = getPlayerByID(myMap,myBomb->playerID);
     myPlayer->bombCount++;
@@ -201,8 +202,8 @@ void bombExplode(Map *myMap, int x, int y){
 
     for (int i = 0; i < myBomb->strength; ++i) {
         if(x-i>=0){
-            if(myMap->tileGrid[x-i][y].player->playerID != 0){ //joueur présent
-
+            if(myMap->tileGrid[x-i][y].player != NULL){ //joueur présent
+                playerDie(myMap, x-i, y);
             }
             if(myMap->tileGrid[x-i][y].wall == 2){ //mur destructible
                 myMap->tileGrid[x-i][y].wall = 0;
@@ -212,7 +213,8 @@ void bombExplode(Map *myMap, int x, int y){
             }
         }
         if(y-i>=0){
-            if(myMap->tileGrid[x][y-i].player->playerID != 0){ //joueur présent
+            if(myMap->tileGrid[x][y-i].player != NULL){ //joueur présent
+                playerDie(myMap, x, y-i);
 
             }
             if(myMap->tileGrid[x][y-i].wall == 2){ //mur destructible
@@ -222,8 +224,9 @@ void bombExplode(Map *myMap, int x, int y){
                 bombExplode(myMap,x,y-i);
             }
         }
-        if(x+i<=myMap->height){
-            if(myMap->tileGrid[x+i][y].player->playerID != 0){ //joueur présent
+        if(x+i<myMap->height){
+            if(myMap->tileGrid[x+i][y].player != NULL){ //joueur présent
+                playerDie(myMap, x+i, y);
 
             }
             if(myMap->tileGrid[x+i][y].wall == 2){ //mur destructible
@@ -233,8 +236,9 @@ void bombExplode(Map *myMap, int x, int y){
                 bombExplode(myMap,x+i,y);
             }
         }
-        if(y+i<=myMap->width){
-            if(myMap->tileGrid[x][y+i].player->playerID != 0){ //joueur présent
+        if(y+i<myMap->width){
+            if(myMap->tileGrid[x][y+i].player != NULL){ //joueur présent
+                playerDie(myMap, x, y+i);
 
             }
             if(myMap->tileGrid[x][y+i].wall == 2){ //mur destructible
@@ -272,16 +276,61 @@ int menu(){
     return choice;
 }
 
+Map convertMap(char *path){
+    int playerCount,bombCount,bombStrength, width, height;
+    FILE *map = fopen(path,"r");
+    fscanf(map, "%d %d %d %d %d", &playerCount, &bombCount, &bombStrength, &width, &height);
+    int playerID = 0;
+    Map myMap = {
+            .height = height,
+            .width = width,
+            .players = malloc(sizeof(Player)*playerCount),
+            .tileGrid = malloc(sizeof(Tile)*height),
+    };
+    for (int i = 0; i < playerCount; ++i) {
+        myMap.players[i] = newPlayer(i+1,bombCount,bombStrength);
+    }
+    for (int x = 0; x < myMap.height; ++x) {
+        //ignore les \n du fichier, moche mais fonctionne
+        fseek(map,2,SEEK_CUR);
+        myMap.tileGrid[x] = malloc(sizeof(Tile)*width);
+        for (int y = 0; y < myMap.width; ++y) {
+            myMap.tileGrid[x][y].wall = 0;
+            myMap.tileGrid[x][y].powerUP = 0;
+            myMap.tileGrid[x][y].player = NULL;
+            myMap.tileGrid[x][y].bomb = nullBomb();
+            char currentChar = getc(map);
+            if(currentChar == 'x'){
+                myMap.tileGrid[x][y].wall = 1;
+            } else if(currentChar == 'm'){
+                myMap.tileGrid[x][y].wall = 2;
+            } else if(currentChar == 'p'){
+                myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
+                playerID++;
+            }
+            //printf("%c ", currentChar);
+        }
+    }
+    printf("\n");
+    return myMap;
+}
+
 int main() {
+    Map myMap = convertMap("../Maps/map3.txt");
+
+    printMap(&myMap);
+    /*
     int mainMenu = menu();
     if(mainMenu == 1) {
         // Charger la map
-        Map myMap = newMap(11,11);
+        Map myMap = newMap(5,5);
         printMap(&myMap);
-        for (int i = 0; i < 200; ++i) {
-            //la boucle ignore 1/2 scanf et jsp pk
-            //Erwan : j'ai mis en commentaire ton printMap en dessous : ça affiche deux fois la map sinon
-            actionPlayer(&myMap, getPlayerByID(&myMap,2));
+        while(1){
+            if(getPlayerByID(&myMap,1)->isAlive != 1){
+                printf("Game over");
+                return 0;
+            }
+            actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
             printMap(&myMap);
         }
@@ -297,15 +346,7 @@ int main() {
         printf("A bientot !");
         return 0;
     }
-    /*Map myMap = newMap(11,11);
-    printMap(&myMap);
-    for (int i = 0; i < 200; ++i) {
-        //la boucle ignore 1/2 scanf et jsp pk
-        actionPlayer(&myMap, getPlayerByID(&myMap,2));
-        checkBomb(&myMap);
-        printMap(&myMap);
-    }
-    */
+     */
     /*
      * boucle de jeu :
      * afficher carte
@@ -314,6 +355,4 @@ int main() {
      * check bombes
      * check joueur en vie
      */
-
-    // return 0;
 }
