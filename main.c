@@ -35,7 +35,7 @@ typedef struct Map {
 
 Bomb newBomb(Player *myPlayer){
     Bomb myBomb = {
-            .timer = 5,
+            .timer = 8,
             .strength = myPlayer->bombStrength,
             .playerID = myPlayer->playerID,
     };
@@ -122,49 +122,11 @@ void actionPlayer(Map *myMap,Player *myPlayer){
 }
 
 Player *getPlayerByID(Map *myMap, int playerID){
-    return &myMap->players[playerID];
+    return &myMap->players[playerID-1];
 }
 
 Player *getPlayerByPos(Map *myMap, int x, int y){
     return myMap->tileGrid[x][y].player;
-}
-
-Map newMap(int height, int width) {
-    //toujours initialiser toutes les valeurs même vides
-    int playerID = 1;
-    Map myMap = {
-            .height = height,
-            .width = width,
-            .players = malloc(sizeof(Player)*4),
-            .tileGrid = malloc(sizeof(Tile)*height),
-    };
-    for (int i = 0; i < 4; ++i) {
-        Player myPlayer = newPlayer(i+1,2,2);
-        myMap.players[i] = myPlayer;
-        ;
-    }
-    for (int x = 0; x < myMap.height; ++x) {
-        myMap.tileGrid[x] = malloc(sizeof(Tile)*height);
-        for (int y = 0; y < myMap.width; ++y) {
-            myMap.tileGrid[x][y].wall = 0;
-            myMap.tileGrid[x][y].powerUP = 0;
-            myMap.tileGrid[x][y].player = NULL;
-            myMap.tileGrid[x][y].bomb = nullBomb();
-            //myMap.tileGrid[x][y].player. = ;
-            if (x == 0 || y == 0 || x == height - 1 || y == width - 1) {
-                myMap.tileGrid[x][y].wall = 1;
-            } else if ((x==1 || x == height-2) && (y==1 || y==width-2)) {
-                myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
-                playerID++;
-                //player
-            } else if (x%2 == 0 && y%2 == 0) {
-                myMap.tileGrid[x][y].wall = 2;
-            } else {
-                //vide
-            }
-        }
-    }
-    return myMap;
 }
 
 void printMap(Map *myMap){
@@ -280,7 +242,7 @@ Map convertMap(char *path){
     int playerCount,bombCount,bombStrength, width, height;
     FILE *map = fopen(path,"r");
     fscanf(map, "%d %d %d %d %d", &playerCount, &bombCount, &bombStrength, &width, &height);
-    int playerID = 0;
+    int playerID = 1;
     Map myMap = {
             .height = height,
             .width = width,
@@ -308,7 +270,6 @@ Map convertMap(char *path){
                 myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
                 playerID++;
             }
-            //printf("%c ", currentChar);
         }
     }
     printf("\n");
@@ -316,14 +277,16 @@ Map convertMap(char *path){
 }
 
 int main() {
-    Map myMap = convertMap("../Maps/map3.txt");
-
-    printMap(&myMap);
     /*
+    Map myMap = convertMap("../Maps/map3.txt");
+    printMap(&myMap);
+    printf("\n");
+    printf("%d", getPlayerByID(&myMap,3)->playerID);
+*/
     int mainMenu = menu();
     if(mainMenu == 1) {
         // Charger la map
-        Map myMap = newMap(5,5);
+        Map myMap = convertMap("../Maps/map3.txt");
         printMap(&myMap);
         while(1){
             if(getPlayerByID(&myMap,1)->isAlive != 1){
@@ -346,7 +309,6 @@ int main() {
         printf("A bientot !");
         return 0;
     }
-     */
     /*
      * boucle de jeu :
      * afficher carte
