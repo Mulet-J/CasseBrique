@@ -91,7 +91,12 @@ void actionPlayer(Map *myMap,Player *myPlayer){
             }
         }
     }
+    //solution 1
     scanf("%c",&direction);
+    scanf("%c",&direction);
+    //solution 2 (espace fonctionne pas)
+    //scanf(" %c",&direction);
+
     switch (direction) {
         case 'z':
             if(xPlayer != 0 && myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer-1][yPlayer].player == NULL && myMap->tileGrid[xPlayer-1][yPlayer].bomb.playerID == 0){
