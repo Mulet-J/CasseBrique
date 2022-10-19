@@ -33,6 +33,8 @@ typedef struct Map {
     Tile **tileGrid;
 } Map;
 
+void selectMap(int choice);
+
 Bomb newBomb(Player *myPlayer){
     Bomb myBomb = {
             .timer = 8,
@@ -276,6 +278,20 @@ Map convertMap(char *path){
     return myMap;
 }
 
+void selectMap(int choice) {
+    if (choice == 1) {
+        Map myMap = convertMap("../Maps/map1.txt");
+        printMap(&myMap);
+    } else if (choice == 2) {
+        Map myMap = convertMap("../Maps/map2.txt");
+        printMap(&myMap);
+    } else if (choice == 3) {
+        Map myMap = convertMap("../Maps/map3.txt");
+        printMap(&myMap);
+    } else if (choice == 4) main();
+}
+
+
 int main() {
     /*
     Map myMap = convertMap("../Maps/map3.txt");
@@ -290,8 +306,16 @@ int main() {
         printMap(&myMap);
         while(1){
             if(getPlayerByID(&myMap,1)->isAlive != 1){
-                printf("Game over");
-                return 0;
+                printf("Game over\n");
+                int choice;
+                printf("1: Retourner au menu\n2: Quitter le jeu\n");
+                scanf("%d", &choice);
+                while (choice != 1 && choice != 2) {
+                    printf("Rentrez un choix valide :\n");
+                    scanf("%d", &choice);
+                }
+                if(choice == 1) main();
+                else if(choice == 2) return 0;
             }
             actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
@@ -308,18 +332,7 @@ int main() {
                 printf("Cette map n'existe pas\n");
                 scanf("%d", &choice);
             }
-            if (choice == 1) {
-                Map myMap = convertMap("../Maps/map1.txt");
-                printMap(&myMap);
-            } else if (choice == 2) {
-                Map myMap = convertMap("../Maps/map2.txt");
-                printMap(&myMap);
-            } else if (choice == 3) {
-                Map myMap = convertMap("../Maps/map3.txt");
-                printMap(&myMap);
-            } else if (choice == 4) {
-                main();
-            }
+            selectMap(choice);
         }
     }
     if(mainMenu == 3) {
@@ -335,3 +348,4 @@ int main() {
      * check joueur en vie
      */
 }
+
