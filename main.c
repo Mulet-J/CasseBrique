@@ -300,10 +300,25 @@ int main() {
     }
     if(mainMenu == 2) {
         int choice;
-        printf("Affiche la liste des maps\n");
-        printf("Choisir une map de la liste : ");
+        printf("1: Map 1\n2: Map 2\n3: Map 3\n4: Retour au menu\n");
+        printf("Choisir une map de la liste : \n");
         scanf("%d", &choice);
-        printf("%d", choice);
+        while(choice < 1 || choice > 4) {
+            printf("Cette map n'existe pas\n");
+            scanf("%d", &choice);
+        }
+        if(choice == 1) {
+            Map myMap = convertMap("../Maps/map1.txt");
+            printMap(&myMap);
+        } else if(choice == 2) {
+            Map myMap = convertMap("../Maps/map2.txt");
+            printMap(&myMap);
+        } else if(choice == 3) {
+            Map myMap = convertMap("../Maps/map3.txt");
+            printMap(&myMap);
+        } else if(choice == 4) {
+            main();
+        }
     }
     if(mainMenu == 3) {
         printf("A bientot !");
