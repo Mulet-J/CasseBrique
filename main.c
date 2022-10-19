@@ -299,25 +299,28 @@ int main() {
         }
     }
     if(mainMenu == 2) {
-        int choice;
-        printf("1: Map 1\n2: Map 2\n3: Map 3\n4: Retour au menu\n");
-        printf("Choisir une map de la liste : \n");
-        scanf("%d", &choice);
-        while(choice < 1 || choice > 4) {
-            printf("Cette map n'existe pas\n");
+        int choice = 0;
+        while(choice != 4) {
+            printf("\n1: Map 1\n2: Map 2\n3: Map 3\n4: Retour au menu\n");
+            printf("Choisir une map de la liste : \n");
             scanf("%d", &choice);
-        }
-        if(choice == 1) {
-            Map myMap = convertMap("../Maps/map1.txt");
-            printMap(&myMap);
-        } else if(choice == 2) {
-            Map myMap = convertMap("../Maps/map2.txt");
-            printMap(&myMap);
-        } else if(choice == 3) {
-            Map myMap = convertMap("../Maps/map3.txt");
-            printMap(&myMap);
-        } else if(choice == 4) {
-            main();
+            while (choice < 1 || choice > 4) {
+                printf("Cette map n'existe pas\n");
+                scanf("%d", &choice);
+            }
+            if (choice == 1) {
+                Map myMap = convertMap("../Maps/map1.txt");
+                printMap(&myMap);
+                main();
+            } else if (choice == 2) {
+                Map myMap = convertMap("../Maps/map2.txt");
+                printMap(&myMap);
+            } else if (choice == 3) {
+                Map myMap = convertMap("../Maps/map3.txt");
+                printMap(&myMap);
+            } else if (choice == 4) {
+                main();
+            }
         }
     }
     if(mainMenu == 3) {
