@@ -311,7 +311,6 @@ int main() {
             if (choice == 1) {
                 Map myMap = convertMap("../Maps/map1.txt");
                 printMap(&myMap);
-                main();
             } else if (choice == 2) {
                 Map myMap = convertMap("../Maps/map2.txt");
                 printMap(&myMap);
