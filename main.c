@@ -292,7 +292,6 @@ int main() {
         // Charger la map
         Map myMap = convertMap("../Maps/map3.txt");
         printMap(&myMap);
-        int choice;
         while(1){
             if(getPlayerByID(&myMap,1)->isAlive != 1){
                 printf("Game over\n\n");
