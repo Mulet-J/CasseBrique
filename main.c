@@ -232,7 +232,6 @@ void checkBomb(Map *myMap){
 
 int menu(){
     int choice;
-    printf("Bienvenue dans Casse-briques !\n\n");
     printf("Menu principal:\n1. Nouvelle partie\n2. Voir les maps\n3. Quitter le jeu\n\n");
     scanf("%d", &choice);
     while(choice < 1 || choice > 3) {
@@ -280,24 +279,6 @@ Map convertMap(char *path){
     return myMap;
 }
 
-int exitGame() {
-    return 0;
-}
-
-int endOfParty(int *choice) {
-    printf("1: Retourner au menu\n2: Quitter le jeu\n");
-    scanf("%d", choice);
-    while ((*choice) != 1 && (*choice) != 2) {
-        printf("Rentrez un choix valide :\n");
-        scanf("%d", choice);
-    }
-    if(*choice == 1) main();
-    else if(*choice == 2) {
-        // return 0 ne fonctionne pas...
-        return 0;
-    }
-}
-
 
 int main() {
     /*
@@ -311,16 +292,15 @@ int main() {
         // Charger la map
         Map myMap = convertMap("../Maps/map3.txt");
         printMap(&myMap);
+        int choice;
         while(1){
             if(getPlayerByID(&myMap,1)->isAlive != 1){
-                printf("Game over\n");
-                int choice;
-                endOfParty(&choice);
+                printf("Game over\n\n");
+                return main();
             }
             if(getPlayerByID(&myMap,2)->isAlive != 1){
-                printf("You win !\n");
-                int choice;
-                endOfParty(choice);
+                printf("You win !\n\n");
+                return main();
             }
             actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
@@ -342,7 +322,7 @@ int main() {
     }
     if(mainMenu == 3) {
         printf("A bientot !");
-        exitGame();
+        return 0;
     }
     /*
      * boucle de jeu :
@@ -353,6 +333,8 @@ int main() {
      * check joueur en vie
      */
 }
+
+
 
 
 
