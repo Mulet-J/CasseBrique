@@ -35,6 +35,8 @@ typedef struct Map {
 
 void selectMap(int choice);
 
+void endParty(int *choice);
+
 Bomb newBomb(Player *myPlayer){
     Bomb myBomb = {
             .timer = 8,
@@ -278,19 +280,9 @@ Map convertMap(char *path){
     return myMap;
 }
 
-void selectMap(int choice) {
-    if (choice == 1) {
-        Map myMap = convertMap("../Maps/map1.txt");
-        printMap(&myMap);
-    } else if (choice == 2) {
-        Map myMap = convertMap("../Maps/map2.txt");
-        printMap(&myMap);
-    } else if (choice == 3) {
-        Map myMap = convertMap("../Maps/map3.txt");
-        printMap(&myMap);
-    } else if (choice == 4) main();
+int exitGame() {
+    return 0;
 }
-
 
 int main() {
     /*
@@ -308,14 +300,12 @@ int main() {
             if(getPlayerByID(&myMap,1)->isAlive != 1){
                 printf("Game over\n");
                 int choice;
-                printf("1: Retourner au menu\n2: Quitter le jeu\n");
-                scanf("%d", &choice);
-                while (choice != 1 && choice != 2) {
-                    printf("Rentrez un choix valide :\n");
-                    scanf("%d", &choice);
-                }
-                if(choice == 1) main();
-                else if(choice == 2) return 0;
+                endParty(&choice);
+            }
+            if(getPlayerByID(&myMap,2)->isAlive != 1){
+                printf("You win !\n");
+                int choice;
+                endParty(choice);
             }
             actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
@@ -337,7 +327,7 @@ int main() {
     }
     if(mainMenu == 3) {
         printf("A bientot !");
-        return 0;
+        exitGame();
     }
     /*
      * boucle de jeu :
@@ -347,5 +337,32 @@ int main() {
      * check bombes
      * check joueur en vie
      */
+}
+
+void endParty(int *choice) {
+    printf("1: Retourner au menu\n2: Quitter le jeu\n");
+    scanf("%d", choice);
+    while ((*choice) != 1 && (*choice) != 2) {
+        printf("Rentrez un choix valide :\n");
+        scanf("%d", choice);
+    }
+    if((*choice) == 1) main();
+    else if((*choice) == 2) {
+        exitGame();
+    }
+}
+
+
+void selectMap(int choice) {
+    if (choice == 1) {
+        Map myMap = convertMap("../Maps/map1.txt");
+        printMap(&myMap);
+    } else if (choice == 2) {
+        Map myMap = convertMap("../Maps/map2.txt");
+        printMap(&myMap);
+    } else if (choice == 3) {
+        Map myMap = convertMap("../Maps/map3.txt");
+        printMap(&myMap);
+    } else if (choice == 4) main();
 }
 
