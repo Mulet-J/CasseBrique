@@ -284,6 +284,21 @@ int exitGame() {
     return 0;
 }
 
+int endOfParty(int *choice) {
+    printf("1: Retourner au menu\n2: Quitter le jeu\n");
+    scanf("%d", choice);
+    while ((*choice) != 1 && (*choice) != 2) {
+        printf("Rentrez un choix valide :\n");
+        scanf("%d", choice);
+    }
+    if(*choice == 1) main();
+    else if(*choice == 2) {
+        // return 0 ne fonctionne pas...
+        return 0;
+    }
+}
+
+
 int main() {
     /*
     Map myMap = convertMap("../Maps/map3.txt");
@@ -300,12 +315,12 @@ int main() {
             if(getPlayerByID(&myMap,1)->isAlive != 1){
                 printf("Game over\n");
                 int choice;
-                endParty(&choice);
+                endOfParty(&choice);
             }
             if(getPlayerByID(&myMap,2)->isAlive != 1){
                 printf("You win !\n");
                 int choice;
-                endParty(choice);
+                endOfParty(choice);
             }
             actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
@@ -339,18 +354,6 @@ int main() {
      */
 }
 
-void endParty(int *choice) {
-    printf("1: Retourner au menu\n2: Quitter le jeu\n");
-    scanf("%d", choice);
-    while ((*choice) != 1 && (*choice) != 2) {
-        printf("Rentrez un choix valide :\n");
-        scanf("%d", choice);
-    }
-    if((*choice) == 1) main();
-    else if((*choice) == 2) {
-        exitGame();
-    }
-}
 
 
 void selectMap(int choice) {
