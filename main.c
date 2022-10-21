@@ -306,12 +306,26 @@ int main() {
                     return main();
                 }
                 else if(choice == 2) {
+                    printf("A bientot !");
                     return 0;
                 }
             }
-            if(getPlayerByID(&myMap,2)->isAlive != 1){
+            if(getPlayerByID(&myMap,2)->isAlive != 1) {
+                int choice;
                 printf("You win !\n\n");
-                return main();
+                printf("\n1: Revenir au menu\n2: Quitter le jeu\n");
+                scanf("%d", &choice);
+                while (choice < 1 || choice > 2) {
+                    printf("Rentrez un choix valide svp\n");
+                    scanf("%d", &choice);
+                }
+                if(choice == 1) {
+                    return main();
+                }
+                else if(choice == 2) {
+                    printf("A bientot !");
+                    return 0;
+                }
             }
             actionPlayer(&myMap, getPlayerByID(&myMap,1));
             checkBomb(&myMap);
