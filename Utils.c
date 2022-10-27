@@ -2,6 +2,9 @@
 // Created by jules on 26/10/2022.
 //
 #include "Utils.h"
+#include "Map.h"
+#include "Player.h"
+#include "Bomb.h"
 
 void selectMap() {
     int choice = 0;
@@ -23,7 +26,7 @@ void selectMap() {
             Map myMap = convertMap("../Maps/map3.txt");
             printMap(&myMap);
         } else if (choice == 4){
-            menu();
+
         }
     }
 

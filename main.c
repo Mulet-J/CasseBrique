@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "Utils.h"
 
 int main() {
@@ -5,5 +6,4 @@ int main() {
     while(play){
         play = menu();
     }
-
 }

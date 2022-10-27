@@ -5,21 +5,16 @@
 #ifndef CASSEBRIQUE_PLAYER_H
 #define CASSEBRIQUE_PLAYER_H
 
-#include <stdbool.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-typedef struct Player {
-    int playerID;
-    int health;
-    int bombStrength;
-    int bombCount;
-    int invincibility;
-    int isAlive;
-} Player;
+#include "Structs.h"
 
 Player newPlayer(int playerID, int bombCount, int bombStrength);
+
+Player *getPlayerByID(Map *myMap, int playerID);
+
+Player *getPlayerByPos(Map *myMap, int x, int y);
+
+void playerDie(Map *myMap, int x, int y);
+
+void actionPlayer(Map *myMap, Player *myPlayer);
 
 #endif //CASSEBRIQUE_PLAYER_H

@@ -4,7 +4,7 @@
 
 #ifndef CASSEBRIQUE_UTILS_H
 #define CASSEBRIQUE_UTILS_H
-#include "Map.h"
+#include "Structs.h"
 
 void selectMap();
 
