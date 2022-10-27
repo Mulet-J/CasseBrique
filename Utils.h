@@ -6,7 +6,7 @@
 #define CASSEBRIQUE_UTILS_H
 #include "Map.h"
 
-void selectMap(int choice);
+void selectMap();
 
 int menu();
 

@@ -28,11 +28,15 @@ typedef struct Map {
 
 void printMap(Map *myMap);
 
+Map convertMap(char *path);
+
 Bomb newBomb(Player *myPlayer);
 
 Bomb nullBomb();
 
 Bomb *getBomb(Map myMap, int x, int y);
+
+void checkBomb(Map *myMap);
 
 void actionPlayer(Map *myMap,Player *myPlayer);
 
@@ -43,9 +47,5 @@ Player *getPlayerByID(Map *myMap, int playerID);
 Player *getPlayerByPos(Map *myMap, int x, int y);
 
 void playerDie(Map *myMap, int x, int y);
-
-Map convertMap(char *path);
-
-void checkBomb(Map *myMap);
 
 #endif //CASSEBRIQUE_MAP_H
