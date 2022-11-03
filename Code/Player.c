@@ -51,25 +51,37 @@ void actionPlayer(Map *myMap, Player *myPlayer) {
     switch (direction) {
         case 'z':
             if(xPlayer != 0 && myMap->tileGrid[xPlayer-1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer-1][yPlayer].player == NULL && myMap->tileGrid[xPlayer-1][yPlayer].bomb.playerID == 0){
-                myMap->tileGrid[xPlayer-1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer-1][yPlayer].player = myPlayer;
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
+            } else if(xPlayer == 0 && myMap->tileGrid[myMap->height-1][yPlayer].wall == 0){
+                myMap->tileGrid[myMap->height-1][yPlayer].player = myPlayer;
                 myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 'q':
             if(yPlayer != 0 && myMap->tileGrid[xPlayer][yPlayer-1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer-1].player == NULL && myMap->tileGrid[xPlayer][yPlayer-1].bomb.playerID == 0){
-                myMap->tileGrid[xPlayer][yPlayer-1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer-1].player = myPlayer;
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
+            } else if(yPlayer == 0 && myMap->tileGrid[xPlayer][myMap->width-1].wall == 0){
+                myMap->tileGrid[xPlayer][myMap->width-1].player = myPlayer;
                 myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 's':
             if(xPlayer != myMap->height-1 && myMap->tileGrid[xPlayer+1][yPlayer].wall == 0 && myMap->tileGrid[xPlayer+1][yPlayer].player == NULL && myMap->tileGrid[xPlayer+1][yPlayer].bomb.playerID == 0){
-                myMap->tileGrid[xPlayer+1][yPlayer].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer+1][yPlayer].player = myPlayer;
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
+            } else if(xPlayer == myMap->height-1 && myMap->tileGrid[0][yPlayer].wall == 0){
+                myMap->tileGrid[0][yPlayer].player = myPlayer;
                 myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
         case 'd':
             if(yPlayer != myMap->width-1 && myMap->tileGrid[xPlayer][yPlayer+1].wall == 0 && myMap->tileGrid[xPlayer][yPlayer+1].player == NULL && myMap->tileGrid[xPlayer][yPlayer+1].bomb.playerID == 0){
-                myMap->tileGrid[xPlayer][yPlayer+1].player = myMap->tileGrid[xPlayer][yPlayer].player;
+                myMap->tileGrid[xPlayer][yPlayer+1].player = myPlayer;
+                myMap->tileGrid[xPlayer][yPlayer].player = NULL;
+            } else if(yPlayer == myMap->width-1 && myMap->tileGrid[xPlayer][0].wall == 0){
+                myMap->tileGrid[xPlayer][0].player = myPlayer;
                 myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
