@@ -4,6 +4,11 @@
 #include "Bomb.h"
 #include "Player.h"
 
+/**
+ * Crée une structure bombe et enlève une bombe au joueur
+ * @param myPlayer Pointeur vers le joueur qui à posé la bombe
+ * @return Structure bombe
+ */
 Bomb newBomb(Player *myPlayer) {
     Bomb myBomb = {
             .timer = 8,
@@ -14,6 +19,11 @@ Bomb newBomb(Player *myPlayer) {
     return myBomb;
 }
 
+/**
+ * Crée une structure bombe vide (pour les cases ou il n'y a pas de bombes, pour éviter
+ * les valeurs déjà présente dans la mémoire
+ * @return Structure bombe à zero
+ */
 Bomb nullBomb() {
     Bomb myBomb = {
             .timer = 0,
@@ -23,10 +33,23 @@ Bomb nullBomb() {
     return myBomb;
 }
 
+/**
+ * Récupère le pointeur de la bombe à l'emplacement spécifié
+ * @param myMap Pointeur vers la carte du jeu
+ * @param x Rangée
+ * @param y Colonne
+ * @return Pointeur vers la bombe
+ */
 Bomb *getBomb(Map myMap, int x, int y) {
     return &myMap.tileGrid[x][y].bomb;
 }
 
+/**
+ * Explosion d'une bombe à l'emplacement spécifié
+ * @param myMap Pointeur vers la carte du jeu
+ * @param x Rangée
+ * @param y Colonne
+ */
 void bombExplode(Map *myMap, int x, int y) {
     //ignorer warning c'est géré
     Bomb *myBomb = getBomb(*myMap,x,y);
@@ -51,7 +74,6 @@ void bombExplode(Map *myMap, int x, int y) {
         if(y-i>=0){
             if(myMap->tileGrid[x][y-i].player != NULL){ //joueur présent
                 playerDie(myMap, x, y-i);
-
             }
             if(myMap->tileGrid[x][y-i].wall == 2){ //mur destructible
                 myMap->tileGrid[x][y-i].wall = 0;
@@ -63,7 +85,6 @@ void bombExplode(Map *myMap, int x, int y) {
         if(x+i<myMap->height){
             if(myMap->tileGrid[x+i][y].player != NULL){ //joueur présent
                 playerDie(myMap, x+i, y);
-
             }
             if(myMap->tileGrid[x+i][y].wall == 2){ //mur destructible
                 myMap->tileGrid[x+i][y].wall = 0;
@@ -75,7 +96,6 @@ void bombExplode(Map *myMap, int x, int y) {
         if(y+i<myMap->width){
             if(myMap->tileGrid[x][y+i].player != NULL){ //joueur présent
                 playerDie(myMap, x, y+i);
-
             }
             if(myMap->tileGrid[x][y+i].wall == 2){ //mur destructible
                 myMap->tileGrid[x][y+i].wall = 0;
@@ -87,6 +107,10 @@ void bombExplode(Map *myMap, int x, int y) {
     }
 }
 
+/**
+ * Parcours la carte et vérifie si une bombe doit exploser ou doit réduire le timer
+ * @param myMap Pointeur vers la carte du jeu
+ */
 void checkBomb(Map *myMap) {
     for (int x = 0; x < myMap->height; ++x) {
         for (int y = 0; y < myMap->width; ++y) {

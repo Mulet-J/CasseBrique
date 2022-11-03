@@ -9,6 +9,10 @@
 #include "Player.h"
 #include "Bomb.h"
 
+/**
+ * Affiche la carte actuelle dans la console
+ * @param myMap Pointeur vers la carte du jeu
+ */
 void printMap(Map *myMap) {
     //clearScreen(); //fonctionne mais buggé avec le cli CLion
     for (int x = 0; x < myMap->height; ++x) {
@@ -29,6 +33,11 @@ void printMap(Map *myMap) {
     }
 }
 
+/**
+ * Génère une carte à partir d'un fichier
+ * @param path Chemin du fichier
+ * @return Une carte de jeu
+ */
 Map convertMap(char *path) {
     int playerCount,bombCount,bombStrength, width, height;
     FILE *map = fopen(path,"r");

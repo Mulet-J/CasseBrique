@@ -4,6 +4,13 @@
 #include "Player.h"
 #include "Bomb.h"
 
+/**
+ * Crée une nouvelle structure joueur
+ * @param playerID ID du joueur
+ * @param bombCount Nombre de bombe simultanées pouvant être posées
+ * @param bombStrength Puissance des bombes du joueur
+ * @return Structure joueur
+ */
 Player newPlayer(int playerID, int bombCount, int bombStrength) {
     Player myPlayer = {
             .playerID = playerID,
@@ -16,20 +23,44 @@ Player newPlayer(int playerID, int bombCount, int bombStrength) {
     return myPlayer;
 }
 
+/**
+ * Récupère un joueur en fonction de son ID
+ * @param myMap Pointeur vers la carte du jeu
+ * @param playerID ID du joueur recherché
+ * @return Pointeur vers le joueur recherché
+ */
 Player *getPlayerByID(Map *myMap, int playerID) {
     return &myMap->players[playerID-1];
 }
 
+/**
+ * Récupère un joueur en fonction de son emplacement sur la carte
+ * @param myMap Pointeur vers la carte du jeu
+ * @param x Rangée
+ * @param y Colonne
+ * @return Pointeur vers le joueur recherché
+ */
 Player *getPlayerByPos(Map *myMap, int x, int y) {
     return myMap->tileGrid[x][y].player;
 }
 
+/**
+ * Tue un joueur
+ * @param myMap Pointeur vers la carte du jeu
+ * @param x Rangée
+ * @param y Colonne
+ */
 void playerDie(Map *myMap, int x, int y) {
     Player *myPlayer = getPlayerByPos(myMap,x,y);
     myPlayer->isAlive = 0;
     myMap->tileGrid[x][y].player = NULL;
 }
 
+/**
+ * Gère les actions d'un joueur
+ * @param myMap Pointeur vers la carte du jeu
+ * @param myPlayer Pointeur vers le joueur
+ */
 void actionPlayer(Map *myMap, Player *myPlayer) {
     int xPlayer;
     int yPlayer;

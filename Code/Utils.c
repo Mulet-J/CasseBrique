@@ -6,6 +6,9 @@
 #include "Player.h"
 #include "Bomb.h"
 
+/**
+ * Selection des cartes
+ */
 void selectMap() {
     int choice = 0;
     while(choice != 4) {
@@ -32,6 +35,10 @@ void selectMap() {
 
 }
 
+/**
+ * Affichage du menu
+ * @return Retour en cas de fermeture du programme
+ */
 int menu() {
     int mainMenu;
     printf("Menu principal:\n1. Nouvelle partie\n2. Voir les maps\n3. Quitter le jeu\n\n");
@@ -94,6 +101,9 @@ int menu() {
     return 1;
 }
 
+/**
+ * Vide la console
+ */
 void clearScreen() {
 #ifdef _WIN32
     system("cls");
