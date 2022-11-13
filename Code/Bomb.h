@@ -16,5 +16,6 @@ void bombExplode(Map *myMap, int x, int y);
 
 void checkBomb(Map *myMap);
 
+int bombCheckCase(Map *myMap, int x, int y);
 
 #endif //CASSEBRIQUE_BOMB_H

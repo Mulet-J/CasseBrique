@@ -45,64 +45,88 @@ Bomb *getBomb(Map myMap, int x, int y) {
 }
 
 /**
- * Explosion d'une bombe à l'emplacement spécifié
+ * Impact de l'eplosion d'une bombe
+ * @param myMap Pointeur vers la carte du jeu
+ * @param x Rangée
+ * @param y Colonne
+ * @return 1 si une limite (un élément bloquant l'explosion) est atteinte, 0 sinon
+ */
+int bombCheckCase(Map *myMap, int x, int y) {
+    if(myMap->tileGrid[x][y].wall == 1){
+        return 1;
+    } else if(myMap->tileGrid[x][y].wall == 2){
+        myMap->tileGrid[x][y].wall = 0;
+        return 1;
+    }
+    if(myMap->tileGrid[x][y].player != NULL){
+        playerDie(myMap,x,y);
+    }
+    if(myMap->tileGrid[x][y].bomb.playerID != 0){
+        playerDie(myMap,x,y);
+    }
+    return 0;
+}
+
+/**
+ * Explosion d'une bombe
  * @param myMap Pointeur vers la carte du jeu
  * @param x Rangée
  * @param y Colonne
  */
-void bombExplode(Map *myMap, int x, int y) {
-    //ignorer warning c'est géré
+void bombExplode(Map *myMap, int x, int y){
     Bomb *myBomb = getBomb(*myMap,x,y);
     Player *myPlayer = getPlayerByID(myMap,myBomb->playerID);
     myPlayer->bombCount++;
     myBomb->playerID = 0;
-    if(myMap->tileGrid[x][y].player != NULL){
-        playerDie(myMap,x,y);
-    }
-    for (int i = 0; i < myBomb->strength; ++i) {
-        if(x-i>=0){
-            if(myMap->tileGrid[x-i][y].player != NULL){ //joueur présent
-                playerDie(myMap, x-i, y);
-            }
-            if(myMap->tileGrid[x-i][y].wall == 2){ //mur destructible
-                myMap->tileGrid[x-i][y].wall = 0;
-            }
-            if(myMap->tileGrid[x-i][y].bomb.playerID != 0){ //bombe présente
-                bombExplode(myMap,x-i,y);
-            }
-        }
-        if(y-i>=0){
-            if(myMap->tileGrid[x][y-i].player != NULL){ //joueur présent
-                playerDie(myMap, x, y-i);
-            }
-            if(myMap->tileGrid[x][y-i].wall == 2){ //mur destructible
-                myMap->tileGrid[x][y-i].wall = 0;
-            }
-            if(myMap->tileGrid[x][y-i].bomb.playerID != 0){ //bombe présente
-                bombExplode(myMap,x,y-i);
-            }
-        }
-        if(x+i<myMap->height){
-            if(myMap->tileGrid[x+i][y].player != NULL){ //joueur présent
-                playerDie(myMap, x+i, y);
-            }
-            if(myMap->tileGrid[x+i][y].wall == 2){ //mur destructible
-                myMap->tileGrid[x+i][y].wall = 0;
-            }
-            if(myMap->tileGrid[x+i][y].bomb.playerID != 0){ //bombe présente
-                bombExplode(myMap,x+i,y);
-            }
-        }
-        if(y+i<myMap->width){
-            if(myMap->tileGrid[x][y+i].player != NULL){ //joueur présent
-                playerDie(myMap, x, y+i);
-            }
-            if(myMap->tileGrid[x][y+i].wall == 2){ //mur destructible
-                myMap->tileGrid[x][y+i].wall = 0;
-            }
-            if(myMap->tileGrid[x][y+i].bomb.playerID != 0){ //bombe présente
-                bombExplode(myMap,x,y+i);
-            }
+    bombCheckCase(myMap,x,y);
+    for (int i = 0; i < 4; ++i) {
+        switch(i){
+            case 0: //G
+                for (int j = 1; j <= myBomb->strength; ++j) {
+                    if(y-j < 0){ //trou dans la carte
+                        if(bombCheckCase(myMap,x,myMap->width-(j-y))){
+                            break;
+                        }
+                    } else if(bombCheckCase(myMap,x,y-j)){
+                        break;
+                    }
+                }
+            break;
+            case 1: //H
+                for (int j = 1; j <= myBomb->strength; ++j) {
+                    if(x-j < 0){
+                        if(bombCheckCase(myMap,myMap->height-(j-x),y)){
+                            break;
+                        }
+                    } else if(bombCheckCase(myMap,x-j,y)){
+                        break;
+                    }
+                }
+            break;
+            case 2: //D
+                for (int j = 1; j <= myBomb->strength; ++j) {
+                    if(y+j >= myMap->width){
+                        if(bombCheckCase(myMap,x,(y+j)-myMap->width)){
+                            break;
+                        }
+                    } else if(bombCheckCase(myMap,x,y+j)){
+                        break;
+                    }
+                }
+            break;
+            case 3: //B
+                for (int j = 1; j <= myBomb->strength; ++j) {
+                    if(x+j >= myMap->height){
+                        if(bombCheckCase(myMap,(x+j)-myMap->height,y)){
+                            break;
+                        }
+                    } else if(bombCheckCase(myMap,x+j,y)){
+                        break;
+                    }
+                }
+            break;
+            default:
+            break;
         }
     }
 }
