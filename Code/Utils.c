@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "Bomb.h"
+#include <time.h>
 
 /**
  * Selection des cartes
@@ -18,7 +19,7 @@ void insert(int *arr, int N, int position, int value) {
 }
 
 int contains(int *arr, int N, int value) {
-    for(int i = 0; i < N; i++) {
+    for(int i = 0; i < N+1; i++) {
         if(arr[i] == value) {
             return 1;
         }
@@ -29,6 +30,7 @@ int selectMap() {
     int choice = 0;
     int length = 0;
     int arrMap[length];
+    srand(time(NULL));
     while(choice != 4) {
         printf("\n1: Map 1\n2: Map 2\n3: Map 3\n4: Lancer la partie\n");
         printf("Choisir une map de la liste : \n");
@@ -38,44 +40,53 @@ int selectMap() {
             scanf("%d", &choice);
         }
         if (choice == 1) {
-            length++;
-            if(contains(arrMap, length, choice)) {
+            length+=1;
+            /*
+             * PROBLEME AVEC LE CONTAIN : REMPLI LE TABLEAU AVEC MAX 2 VALEURS
+             */
+            /*if(contains(arrMap, length, choice)) {
                 printf("Map deja ajoutee \n");
                 length--;
-            } else {
-                insert(arrMap, length, 0, choice);
-            }
+            } else { */
+                insert(arrMap, length, 0, 1);
+            //}
             for(int j = 0; j < length; j++) {
                 printf("%d ", arrMap[j]);
             }
         } else if (choice == 2) {
-            length++;
-            if(contains(arrMap, length, choice)) {
+            length+=1;
+            /*if(contains(arrMap, length, choice)) {
                 printf("Map deja ajoutee \n");
                 length--;
-            } else {
-                insert(arrMap, length, 0, choice);
-            }
+            } else { */
+            insert(arrMap, length, 0, 2);
+            //}
             for(int j = 0; j < length; j++) {
                 printf("%d ", arrMap[j]);
             }
         } else if (choice == 3) {
-            length++;
-            if(contains(arrMap, length, choice)) {
+            length+=1;
+            /*if(contains(arrMap, length, choice)) {
                 printf("Map deja ajoutee \n");
                 length--;
-            } else {
-                insert(arrMap, length, 0, choice);
-            }
+            } else { */
+            insert(arrMap, length, 0, 3);
+            //}
             for(int j = 0; j < length; j++) {
                 printf("%d ", arrMap[j]);
             }
-        } else if (choice == 4) {
-            // Lancer le jeu
-            printf("LANCER LE JEU");
+        } else if(choice == 4) {
+            break;
         }
+        // printf("LANCER LE JEU");
+
+        // Lancer le jeu
+        // printf("%d", res);
     }
-    return *arrMap;
+    printf("LEN:%d :LEN", length);
+    int res = rand()%length;
+    printf("RES:%d :RES", arrMap[res]);
+    return arrMap[res];
 }
 
 void showMap() {
@@ -119,7 +130,6 @@ int menu() {
         // Charger la map
         //Map myMap = convertMap("../Maps/map3.txt");
         Map myMap;
-        //printMap(&myMap);
         int myChoice = selectMap();
         printf("%d", myChoice);
         if(myChoice == 1) {
@@ -129,6 +139,7 @@ int menu() {
         } else if(myChoice == 3) {
             myMap = convertMap("../Maps/map3.txt");
         }
+        printMap(&myMap);
         while(1){
             if(getPlayerByID(&myMap,1)->isAlive != 1){
                 int choice;
