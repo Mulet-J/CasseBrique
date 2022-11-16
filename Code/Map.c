@@ -8,6 +8,7 @@
 #include "Utils.h"
 #include "Player.h"
 #include "Bomb.h"
+#include "Items.h"
 
 /**
  * Affiche la carte actuelle dans la console
@@ -61,6 +62,7 @@ Map convertMap(char *path) {
             myMap.tileGrid[x][y].powerUP = 0;
             myMap.tileGrid[x][y].player = NULL;
             myMap.tileGrid[x][y].bomb = nullBomb();
+            myMap.tileGrid[x][y].items = nullItem();
             char currentChar = getc(map);
             if(currentChar == 'x'){
                 myMap.tileGrid[x][y].wall = 1;
@@ -69,6 +71,9 @@ Map convertMap(char *path) {
             } else if(currentChar == 'p'){
                 myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
                 playerID++;
+            }
+            else if (currentChar == 'O'){
+                myMap.tileGrid[x][y].items = *getItem(myMap,x,y);
             }
         }
     }

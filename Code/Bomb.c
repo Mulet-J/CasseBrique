@@ -44,6 +44,8 @@ Bomb *getBomb(Map myMap, int x, int y) {
     return &myMap.tileGrid[x][y].bomb;
 }
 
+
+
 /**
  * Impact de l'eplosion d'une bombe
  * @param myMap Pointeur vers la carte du jeu

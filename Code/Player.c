@@ -19,6 +19,7 @@ Player newPlayer(int playerID, int bombCount, int bombStrength) {
             .health = 1,
             .invincibility = 0,
             .isAlive = 1,
+            .items = 0
     };
     return myPlayer;
 }

@@ -3,4 +3,4 @@ project(CasseBrique C)
 
 set(CMAKE_C_STANDARD 17)
 
-add_executable(CasseBrique Code/main.c Code/Map.h Code/Map.c Code/Player.h Code/Player.c Code/Utils.h Code/Utils.c Code/Structs.h Code/Bomb.h Code/Bomb.c)
+add_executable(CasseBrique Code/main.c Code/Map.h Code/Map.c Code/Player.h Code/Player.c Code/Utils.h Code/Utils.c Code/Structs.h Code/Bomb.h Code/Bomb.c Code/Items.h Code/Items.c)

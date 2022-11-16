@@ -8,6 +8,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct Items{
+    int kickBomb;
+    int passBomb;
+    int firePower;
+} Items;
+
+
 typedef struct Player {
     int playerID;
     int health;
@@ -15,6 +22,7 @@ typedef struct Player {
     int bombCount;
     int invincibility;
     int isAlive;
+    Items items;
 } Player;
 
 typedef struct Bomb{
@@ -28,6 +36,7 @@ typedef struct  Tile {
     int powerUP;
     Player *player;
     Bomb bomb;
+    Items items;
 } Tile;
 
 typedef struct Map {
@@ -36,4 +45,6 @@ typedef struct Map {
     Player *players;
     Tile **tileGrid;
 } Map;
+
+
 #endif //CASSEBRIQUE_STRUCTS_H
