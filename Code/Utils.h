@@ -6,7 +6,9 @@
 #define CASSEBRIQUE_UTILS_H
 #include "Structs.h"
 
-void selectMap();
+int selectMap();
+
+void showMap();
 
 int menu();
 
