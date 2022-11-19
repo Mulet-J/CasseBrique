@@ -135,31 +135,28 @@ int menu() {
                     for (int i = 0; i < myMapSelection->count; ++i) {
                         if(myMapSelection->maps[i].isActive){
                             play = playGame(myMapSelection->maps[i].map,1);
-                            printf("1 pour passer a la carte suivante, 0 pour arreter");
+                            printf("1 pour passer a la carte suivante, 0 pour arreter\n");
                             scanf("%d",&play);
                         }
                     }
                 }
                 return 1;
-                break;
             case 2:
                 //démarrer le serveur
                 return 1;
-                break;
             case 3:
                 //rejoindre un serveur
                 return 1;
-                break;
             case 4:
                 //fermer l'application
                 return 0;
-                break;
             default:
                 printf("Merci d'entrer un choix valable\n");
                 choice = 0;
                 break;
         }
     }
+    return 1;
 }
 
 void printAvailableMaps(MapSelection *maps) {

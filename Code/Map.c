@@ -66,7 +66,7 @@ Map convertMap(char *filename) {
             myMap.tileGrid[x][y].powerUP = 0;
             myMap.tileGrid[x][y].player = NULL;
             myMap.tileGrid[x][y].bomb = nullBomb();
-            char currentChar = getc(map);
+            char currentChar = (char)getc(map);
             if(currentChar == 'x'){
                 myMap.tileGrid[x][y].wall = 1;
             } else if(currentChar == 'm'){
@@ -105,7 +105,7 @@ int playGame(char *filename, int solo) {
                     scanf(" %c", &direction);
                     actionPlayer(&myMap, getPlayerByID(&myMap,i+1), direction);
                 } else {
-                    ;
+                    //action bot
                 }
             }
         }
