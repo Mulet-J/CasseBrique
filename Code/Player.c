@@ -19,6 +19,7 @@ Player newPlayer(int playerID, int bombCount, int bombStrength) {
             .health = 1,
             .invincibility = 0,
             .isAlive = 1,
+            .isBot = 1,
     };
     return myPlayer;
 }
@@ -61,10 +62,9 @@ void playerDie(Map *myMap, int x, int y) {
  * @param myMap Pointeur vers la carte du jeu
  * @param myPlayer Pointeur vers le joueur
  */
-void actionPlayer(Map *myMap, Player *myPlayer) {
+void actionPlayer(Map *myMap, Player *myPlayer,char direction) {
     int xPlayer;
     int yPlayer;
-    char direction;
     for (int x = 0; x < myMap->height; ++x) {
         for (int y = 0; y < myMap->width; ++y) {
             if(myMap->tileGrid[x][y].player == myPlayer){
@@ -73,11 +73,6 @@ void actionPlayer(Map *myMap, Player *myPlayer) {
             }
         }
     }
-    //solution 1
-    scanf("%c",&direction);
-    scanf("%c",&direction);
-    //solution 2 (espace pas utilisable)
-    //scanf(" %c",&direction);
 
     switch (direction) {
         case 'z':
@@ -116,9 +111,9 @@ void actionPlayer(Map *myMap, Player *myPlayer) {
                 myMap->tileGrid[xPlayer][yPlayer].player = NULL;
             }
             break;
-        case ' ':
+        case 'f':
             if(myMap->tileGrid[xPlayer][yPlayer].bomb.playerID == 0 && myMap->tileGrid[xPlayer][yPlayer].player->bombCount > 0){
-                myMap->tileGrid[xPlayer][yPlayer].bomb = newBomb(myPlayer);
+                myMap->tileGrid[xPlayer][yPlayer].bomb = newBomb(myPlayer, myMap->playerCount);
             }
             break;
         default:

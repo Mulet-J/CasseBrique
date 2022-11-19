@@ -8,6 +8,8 @@
 
 void printMap(Map *myMap);
 
-Map convertMap(char *path);
+Map convertMap(char *filename);
+
+int playGame(char *filename, int solo);
 
 #endif //CASSEBRIQUE_MAP_H

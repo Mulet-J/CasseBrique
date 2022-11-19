@@ -15,6 +15,6 @@ Player *getPlayerByPos(Map *myMap, int x, int y);
 
 void playerDie(Map *myMap, int x, int y);
 
-void actionPlayer(Map *myMap, Player *myPlayer);
+void actionPlayer(Map *myMap, Player *myPlayer,char direction);
 
 #endif //CASSEBRIQUE_PLAYER_H

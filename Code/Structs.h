@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <dirent.h>
 
 typedef struct Player {
     int playerID;
@@ -15,6 +16,7 @@ typedef struct Player {
     int bombCount;
     int invincibility;
     int isAlive;
+    int isBot;
 } Player;
 
 typedef struct Bomb{
@@ -33,7 +35,20 @@ typedef struct  Tile {
 typedef struct Map {
     int width;
     int height;
+    int playerCount;
     Player *players;
     Tile **tileGrid;
 } Map;
+
+typedef struct MapState{
+    char *map;
+    int isActive;
+    int maxPlayers;
+} MapState;
+
+typedef struct MapSelection {
+    MapState *maps;
+    int count;
+} MapSelection;
+
 #endif //CASSEBRIQUE_STRUCTS_H

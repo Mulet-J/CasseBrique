@@ -31,6 +31,7 @@ void printMap(Map *myMap) {
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 /**
@@ -38,9 +39,11 @@ void printMap(Map *myMap) {
  * @param path Chemin du fichier
  * @return Une carte de jeu
  */
-Map convertMap(char *path) {
+Map convertMap(char *filename) {
     int playerCount,bombCount,bombStrength, width, height;
-    FILE *map = fopen(path,"r");
+    char buffer[1024] = "../Maps/";
+    strcat(buffer,filename);
+    FILE *map = fopen(buffer,"r");
     fscanf(map, "%d %d %d %d %d", &playerCount, &bombCount, &bombStrength, &width, &height);
     int playerID = 1;
     Map myMap = {
@@ -48,6 +51,8 @@ Map convertMap(char *path) {
             .width = width,
             .players = malloc(sizeof(Player)*playerCount),
             .tileGrid = malloc(sizeof(Tile)*height),
+            .playerCount = playerCount,
+
     };
     for (int i = 0; i < playerCount; ++i) {
         myMap.players[i] = newPlayer(i+1,bombCount,bombStrength);
@@ -73,5 +78,38 @@ Map convertMap(char *path) {
         }
     }
     printf("\n");
+    fclose(map);
     return myMap;
+}
+
+int playGame(char *filename, int solo) {
+    Map myMap = convertMap(filename);
+    int play = 1;
+    if(solo){
+        myMap.players[0].isBot = 0;
+    }
+    int latestPlayer = 0;
+    while(play){
+        for (int i = 0; i < myMap.playerCount; ++i) {
+            if(myMap.players[i].isAlive){
+                //plus qu'un seul joueur
+                if(latestPlayer == myMap.players[i].playerID){
+                    printf("Joueur %d a gagne\n",myMap.players[i].playerID);
+                    play = 0;
+                    break;
+                }
+                latestPlayer = myMap.players[i].playerID;
+                if(myMap.players[i].isBot != 1){
+                    char direction;
+                    printMap(&myMap);
+                    scanf(" %c", &direction);
+                    actionPlayer(&myMap, getPlayerByID(&myMap,i+1), direction);
+                } else {
+                    ;
+                }
+            }
+        }
+        checkBomb(&myMap);
+    }
+    return 1;
 }
