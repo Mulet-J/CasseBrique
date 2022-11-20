@@ -77,10 +77,8 @@ Map convertMap(char *filename) {
                 playerID++;
             } else if (currentChar == 'o') {
                 if (myMap.tileGrid[x][y].wall == 2){
-                    if (myMap.tileGrid[x][y].bomb){
-                        bombExplode(&myMap, x ,y);
-                        getItem(myMap, x , y);
-                    }
+                    bombExplode(&myMap, x ,y);
+                    getItem(myMap, x , y);
                 }
             }
         }
