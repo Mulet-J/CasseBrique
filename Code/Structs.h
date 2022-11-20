@@ -38,7 +38,11 @@ typedef struct in_addr IN_ADDR;
 #include <errno.h>
 
 #define PORT 5000
-
+typedef struct Items {
+    int kickbomb;
+    int passbomb;
+    int firepower;
+} Items;
 typedef struct Player {
     int playerID;
     int health;
@@ -47,12 +51,14 @@ typedef struct Player {
     int invincibility;
     int isAlive;
     int isBot;
+    Items items;
 } Player;
 
 typedef struct Bomb{
     int playerID;
     int timer;
     int strength;
+    Items items;
 } Bomb;
 
 typedef struct  Tile {
@@ -60,6 +66,7 @@ typedef struct  Tile {
     int powerUP;
     Player *player;
     Bomb bomb;
+    Items items;
 } Tile;
 
 typedef struct Map {

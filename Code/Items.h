@@ -6,7 +6,13 @@
 #define CASSEBRIQUE_ITEMS_H
 #include "Structs.h"
 
-Items *getItem(Map myMap, int x, int y);
+Items getItem(Map myMap, int x, int y);
+
+Bomb passBomb (Map *myMap, int x, int y);
+
+Bomb firepower(Map *myMap, int power, int x, int y);
+
+Items kickBomb(Map *myMap, int x, int y);
 
 Items nullItem();
 

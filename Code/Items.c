@@ -14,9 +14,9 @@
 
 Items nullItem() {
     Items myItems = {
-            .passBomb = 0,
-            .kickBomb = 0,
-            .firePower = 0,
+            .passbomb = 0,
+            .kickbomb = 0,
+            .firepower = 0,
     };
     return myItems;
 }
@@ -30,15 +30,19 @@ Items nullItem() {
 
 Items kickBomb(Map *myMap, int x, int y){
     Bomb bombPos = myMap->tileGrid[x][y].bomb;
-    int i =0;
-    if (myMap->tileGrid[x][y].wall == 2){
-        playerDie(myMap,x,y);
-    }
-    while (myMap->tileGrid[x][y].wall == 0){
-
-        myMap->tileGrid[x][y].bomb = myMap->tileGrid[x+i][y].bomb;
-        i++;
-    }
+     for (int i = 0; i < myMap->height; ++i) {
+         for (int j = 0; j < myMap->width; ++j){
+             if (myMap->tileGrid[x+i][y].wall == 0 ){
+                 bombPos = myMap->tileGrid[x+i][y].bomb;
+             }else if (myMap->tileGrid[x][y+j].wall == 0){
+                 bombPos = myMap->tileGrid[x][y+j].bomb;
+             } else {
+                 printf("Il est impossible de fraper cet bomb");
+                 bombExplode(myMap, x, y);
+                 playerDie(myMap, x ,y);
+             }
+         }
+     }
 }
 
 /** Récupère le pointeur de la bombe à l'emplacement spécifié
@@ -83,12 +87,18 @@ Bomb firepower(Map *myMap, int power, int x, int y){
  * @return Pointeur vers la bombe
  */
 
-Items *getItem(Map myMap, int x, int y) {
-
-    return &myMap.tileGrid[x][y].items;
+Items getItem(Map myMap, int x, int y) {
+    return myMap.tileGrid[x][y].items;
 }
 
-//Items passBomb (Map *myMap, int x, int y){
-//    Bomb bombPos = myMap->tileGrid[x][y].bomb;
-//    if (myMap->tileGrid[x][y].bomb != )
-//}
+Bomb passBomb (Map *myMap, int x, int y){
+    Bomb bombPos = myMap->tileGrid[x][y].bomb;
+    Player *player = getPlayerByPos(myMap, x,y);
+    Bomb passBomb;
+    if (bombPos.timer > 5 && myMap->tileGrid[x][y+1].wall == 1){
+        player = myMap->tileGrid[x+1][y].player;
+    } else if (bombPos.timer > 5 && myMap->tileGrid[x+1][y].wall == 1){
+        player = myMap->tileGrid[x][y+1].player;
+    }
+    return bombPos;
+}

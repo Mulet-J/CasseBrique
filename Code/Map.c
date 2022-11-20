@@ -8,6 +8,7 @@
 #include "Utils.h"
 #include "Player.h"
 #include "Bomb.h"
+#include "Items.h"
 
 /**
  * Affiche la carte actuelle dans la console
@@ -59,21 +60,28 @@ Map convertMap(char *filename) {
     }
     for (int x = 0; x < myMap.height; ++x) {
         //ignore les \n du fichier, moche mais fonctionne
-        fseek(map,2,SEEK_CUR);
-        myMap.tileGrid[x] = malloc(sizeof(Tile)*width);
+        fseek(map, 2, SEEK_CUR);
+        myMap.tileGrid[x] = malloc(sizeof(Tile) * width);
         for (int y = 0; y < myMap.width; ++y) {
             myMap.tileGrid[x][y].wall = 0;
             myMap.tileGrid[x][y].powerUP = 0;
             myMap.tileGrid[x][y].player = NULL;
             myMap.tileGrid[x][y].bomb = nullBomb();
-            char currentChar = (char)getc(map);
-            if(currentChar == 'x'){
+            char currentChar = (char) getc(map);
+            if (currentChar == 'x') {
                 myMap.tileGrid[x][y].wall = 1;
-            } else if(currentChar == 'm'){
+            } else if (currentChar == 'm') {
                 myMap.tileGrid[x][y].wall = 2;
-            } else if(currentChar == 'p'){
-                myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
+            } else if (currentChar == 'p') {
+                myMap.tileGrid[x][y].player = getPlayerByID(&myMap, playerID);
                 playerID++;
+            } else if (currentChar == 'o') {
+                if (myMap.tileGrid[x][y].wall == 2){
+                    if (myMap.tileGrid[x][y].bomb){
+                        bombExplode(&myMap, x ,y);
+                        getItem(myMap, x , y);
+                    }
+                }
             }
         }
     }
