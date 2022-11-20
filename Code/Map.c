@@ -78,7 +78,7 @@ Map convertMap(char *filename) {
             } else if (currentChar == 'o') {
                 if (myMap.tileGrid[x][y].wall == 2){
                     bombExplode(&myMap, x ,y);
-                    getItem(myMap, x , y);
+//                    getItem(myMap, x , y);
                 }
             }
         }
