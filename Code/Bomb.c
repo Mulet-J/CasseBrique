@@ -11,7 +11,7 @@
  */
 Bomb newBomb(Player *myPlayer, int playerCount) {
     Bomb myBomb = {
-            .timer = 1,
+            .timer = 3*playerCount,
             .strength = myPlayer->bombStrength,
             .playerID = myPlayer->playerID,
     };

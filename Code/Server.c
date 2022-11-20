@@ -81,11 +81,9 @@ int server(int clientCount, char *map) {
         }
     }
     Map myMap = convertMap(map);
-    int play = 1;
     for (int i = 0; i < expectedClients; ++i) {
         myMap.players[i].isBot = 0;
     }
-    int latestPlayer = 0;
     boucleJeu(myMap,clientSocket);
 
     closesocket(sock);

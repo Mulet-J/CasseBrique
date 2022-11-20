@@ -13,7 +13,5 @@ void printString(SOCKET sock);
 
 void waitForServer(SOCKET sock);
 
-void sendToServer(SOCKET sock);
-
 int actionClient(char action, SOCKET sock);
 #endif //CASSEBRIQUE_CLIENT_H

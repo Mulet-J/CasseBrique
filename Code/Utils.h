@@ -6,10 +6,6 @@
 #define CASSEBRIQUE_UTILS_H
 #include "Structs.h"
 
-int selectMap();
-
-void showMap();
-
 int menu();
 
 void clearScreen();
@@ -17,8 +13,6 @@ void clearScreen();
 MapSelection *getAlltxtMap();
 
 int getMapPlayerCount(char *filename);
-
-int menu();
 
 void printAvailableMaps(MapSelection *maps);
 

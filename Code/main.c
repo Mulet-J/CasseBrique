@@ -1,6 +1,4 @@
-#include <stdio.h>
 #include "Utils.h"
-#include "Map.h"
 
 int main() {
     int play = 1;

@@ -23,9 +23,7 @@ void clientEnd() {
 
 int client(char *ip) {
     SOCKET sock;
-    int fd;
     struct sockaddr_in address;
-    char *buffer = calloc(sizeof(char)*1024, sizeof(char)*1024);
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr(ip);

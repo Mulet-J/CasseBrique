@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"
-#include "Utils.h"
 #include "Player.h"
 #include "Bomb.h"
 
