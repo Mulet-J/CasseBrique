@@ -118,6 +118,7 @@ int menu() {
     int choice = 0;
     int play = 1;
     int clientCount = 0;
+    char *ip = calloc(sizeof(char)*20, sizeof(char));
     while(choice < 1 || choice > 4) {
         printf("Menu principal:\n1. Demarrer\n2. Demarrer le serveur\n3. Rejoindre un serveur\n4. Quitter le jeu\n");
         MapSelection *myMapSelection = getAlltxtMap();
@@ -151,12 +152,35 @@ int menu() {
                 return 1;
             case 2:
                 //démarrer le serveur
+
                 printf("Nombre de clients\n");
                 scanf("%d", &clientCount);
-                server(clientCount, "map1.txt");
+                while (1){
+                    printf("1/2/3/n pour ajouter une carte (une a la fois). 0 pour lancer le jeu\n");
+                    printAvailableMaps(myMapSelection);
+                    scanf("%d", &choice);
+                    if(choice == 0){
+                        break;
+                    }
+                    toggleMapSelect(myMapSelection, choice);
+                }
+                while(play){
+                    for (int i = 0; i < myMapSelection->count; ++i) {
+                        if(myMapSelection->maps[i].isActive){
+                            play = server(clientCount, "map1.txt");
+                            scanf("%d",&play);
+                            if(play == 0){
+                                break;
+                            }
+                        }
+                    }
+
+                }
                 return 1;
             case 3:
                 //rejoindre un serveur
+                printf("Entrer l'ip de l'hote\n");
+                scanf("%s", ip);
                 client("127.0.0.1");
                 return 1;
             case 4:
