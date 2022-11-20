@@ -2,7 +2,7 @@
 2 7
 5 5
 xxxxx
-x   x
+xp  x
 x m x
-x   x
+x  px
 xxxxx

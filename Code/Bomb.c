@@ -9,9 +9,9 @@
  * @param myPlayer Pointeur vers le joueur qui à posé la bombe
  * @return Structure bombe
  */
-Bomb newBomb(Player *myPlayer) {
+Bomb newBomb(Player *myPlayer, int playerCount) {
     Bomb myBomb = {
-            .timer = 8,
+            .timer = 1,
             .strength = myPlayer->bombStrength,
             .playerID = myPlayer->playerID,
     };
@@ -21,7 +21,7 @@ Bomb newBomb(Player *myPlayer) {
 
 /**
  * Crée une structure bombe vide (pour les cases ou il n'y a pas de bombes, pour éviter
- * les valeurs déjà présente dans la mémoire
+ * les valeurs déjà présente dans la mémoire)
  * @return Structure bombe à zero
  */
 Bomb nullBomb() {
@@ -64,7 +64,7 @@ int bombCheckCase(Map *myMap, int x, int y) {
         playerDie(myMap,x,y);
     }
     if(myMap->tileGrid[x][y].bomb.playerID != 0){
-        playerDie(myMap,x,y);
+        bombExplode(myMap,x,y);
     }
     return 0;
 }

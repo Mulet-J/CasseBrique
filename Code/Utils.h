@@ -6,10 +6,22 @@
 #define CASSEBRIQUE_UTILS_H
 #include "Structs.h"
 
-void selectMap();
+int selectMap();
+
+void showMap();
 
 int menu();
 
 void clearScreen();
+
+MapSelection *getAlltxtMap();
+
+int getMapPlayerCount(char *filename);
+
+int menu();
+
+void printAvailableMaps(MapSelection *maps);
+
+void toggleMapSelect(MapSelection *maps, int choice);
 
 #endif //CASSEBRIQUE_UTILS_H

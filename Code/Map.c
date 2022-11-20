@@ -8,7 +8,6 @@
 #include "Utils.h"
 #include "Player.h"
 #include "Bomb.h"
-#include "Items.h"
 
 /**
  * Affiche la carte actuelle dans la console
@@ -32,6 +31,7 @@ void printMap(Map *myMap) {
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 /**
@@ -39,9 +39,11 @@ void printMap(Map *myMap) {
  * @param path Chemin du fichier
  * @return Une carte de jeu
  */
-Map convertMap(char *path) {
+Map convertMap(char *filename) {
     int playerCount,bombCount,bombStrength, width, height;
-    FILE *map = fopen(path,"r");
+    char buffer[1024] = "../Maps/";
+    strcat(buffer,filename);
+    FILE *map = fopen(buffer,"r");
     fscanf(map, "%d %d %d %d %d", &playerCount, &bombCount, &bombStrength, &width, &height);
     int playerID = 1;
     Map myMap = {
@@ -49,6 +51,8 @@ Map convertMap(char *path) {
             .width = width,
             .players = malloc(sizeof(Player)*playerCount),
             .tileGrid = malloc(sizeof(Tile)*height),
+            .playerCount = playerCount,
+
     };
     for (int i = 0; i < playerCount; ++i) {
         myMap.players[i] = newPlayer(i+1,bombCount,bombStrength);
@@ -62,8 +66,7 @@ Map convertMap(char *path) {
             myMap.tileGrid[x][y].powerUP = 0;
             myMap.tileGrid[x][y].player = NULL;
             myMap.tileGrid[x][y].bomb = nullBomb();
-            myMap.tileGrid[x][y].items = nullItem();
-            char currentChar = getc(map);
+            char currentChar = (char)getc(map);
             if(currentChar == 'x'){
                 myMap.tileGrid[x][y].wall = 1;
             } else if(currentChar == 'm'){
@@ -72,11 +75,61 @@ Map convertMap(char *path) {
                 myMap.tileGrid[x][y].player = getPlayerByID(&myMap,playerID);
                 playerID++;
             }
-            else if (currentChar == 'O'){
-                myMap.tileGrid[x][y].items = *getItem(myMap,x,y);
-            }
         }
     }
     printf("\n");
+    fclose(map);
     return myMap;
+}
+
+int playGameSolo(char *filename) {
+    Map myMap = convertMap(filename);
+    int play = 1;
+    myMap.players[0].isBot = 0;
+    int latestPlayer = 0;
+    while(play){
+        for (int i = 0; i < myMap.playerCount; ++i) {
+            if(myMap.players[i].isAlive){
+                //plus qu'un seul joueur
+                if(latestPlayer == myMap.players[i].playerID){
+                    printf("Joueur %d a gagne\n",myMap.players[i].playerID);
+                    play = 0;
+                    break;
+                }
+                latestPlayer = myMap.players[i].playerID;
+                if(myMap.players[i].isBot != 1){
+                    char direction;
+                    printMap(&myMap);
+                    scanf(" %c", &direction);
+                    actionPlayer(&myMap, getPlayerByID(&myMap,i+1), direction);
+                } else {
+                    //action bot
+                }
+            }
+        }
+        checkBomb(&myMap);
+    }
+    return 1;
+}
+
+char *mapToString(Map *myMap) {
+    char *string = calloc(sizeof(char)*1024, sizeof(char));
+    strcpy(string,"");
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].wall==1) {
+                strcat(string,"X ");
+            } else if(myMap->tileGrid[x][y].wall==2) {
+                strcat(string,"# ");
+            } else if(myMap->tileGrid[x][y].player != NULL) {
+                strcat(string,"p ");
+            } else if(myMap->tileGrid[x][y].bomb.playerID !=0 ) {
+                strcat(string,"b ");
+            } else {
+                strcat(string,"  ");
+            }
+        }
+        strcat(string,"\n");
+    }
+    return string;
 }

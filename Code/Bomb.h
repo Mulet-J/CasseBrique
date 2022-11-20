@@ -6,7 +6,7 @@
 #define CASSEBRIQUE_BOMB_H
 #include "Structs.h"
 
-Bomb newBomb(Player *myPlayer);
+Bomb newBomb(Player *myPlayer, int playerCount);
 
 Bomb nullBomb();
 
