@@ -82,12 +82,10 @@ Map convertMap(char *filename) {
     return myMap;
 }
 
-int playGame(char *filename, int solo) {
+int playGameSolo(char *filename) {
     Map myMap = convertMap(filename);
     int play = 1;
-    if(solo){
-        myMap.players[0].isBot = 0;
-    }
+    myMap.players[0].isBot = 0;
     int latestPlayer = 0;
     while(play){
         for (int i = 0; i < myMap.playerCount; ++i) {
@@ -112,4 +110,26 @@ int playGame(char *filename, int solo) {
         checkBomb(&myMap);
     }
     return 1;
+}
+
+char *mapToString(Map *myMap) {
+    char *string = calloc(sizeof(char)*1024, sizeof(char));
+    strcpy(string,"");
+    for (int x = 0; x < myMap->height; ++x) {
+        for (int y = 0; y < myMap->width; ++y) {
+            if(myMap->tileGrid[x][y].wall==1) {
+                strcat(string,"X ");
+            } else if(myMap->tileGrid[x][y].wall==2) {
+                strcat(string,"# ");
+            } else if(myMap->tileGrid[x][y].player != NULL) {
+                strcat(string,"p ");
+            } else if(myMap->tileGrid[x][y].bomb.playerID !=0 ) {
+                strcat(string,"b ");
+            } else {
+                strcat(string,"  ");
+            }
+        }
+        strcat(string,"\n");
+    }
+    return string;
 }

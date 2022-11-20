@@ -1,11 +1,13 @@
 //
 // Created by jules on 26/10/2022.
 //
+#include <time.h>
 #include "Utils.h"
 #include "Map.h"
 #include "Player.h"
 #include "Bomb.h"
-#include <time.h>
+#include "Server.h"
+#include "Client.h"
 
 /**
  * Selection des cartes
@@ -115,6 +117,7 @@ void showMap() {
 int menu() {
     int choice = 0;
     int play = 1;
+    int clientCount = 0;
     while(choice < 1 || choice > 4) {
         printf("Menu principal:\n1. Demarrer\n2. Demarrer le serveur\n3. Rejoindre un serveur\n4. Quitter le jeu\n");
         MapSelection *myMapSelection = getAlltxtMap();
@@ -134,18 +137,27 @@ int menu() {
                 while(play){
                     for (int i = 0; i < myMapSelection->count; ++i) {
                         if(myMapSelection->maps[i].isActive){
-                            play = playGame(myMapSelection->maps[i].map,1);
+                            play = playGameSolo(myMapSelection->maps[i].map);
                             printf("1 pour passer a la carte suivante, 0 pour arreter\n");
                             scanf("%d",&play);
+                            if(play == 0){
+                                break;
+                            }
                         }
                     }
                 }
+                free(myMapSelection->maps);
+                free(myMapSelection);
                 return 1;
             case 2:
                 //démarrer le serveur
+                printf("Nombre de clients\n");
+                scanf("%d", &clientCount);
+                server(clientCount, "map1.txt");
                 return 1;
             case 3:
                 //rejoindre un serveur
+                client("127.0.0.1");
                 return 1;
             case 4:
                 //fermer l'application
