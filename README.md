@@ -1,6 +1,6 @@
 # Casse brique
-
-Un casse brique en ligne de commande.
+https://github.com/Mulet-J/CasseBrique  
+Un casse brique en ligne de commande.  
 Permet de jouer seul ou à plusieurs en réseau.
 
 ## Information
